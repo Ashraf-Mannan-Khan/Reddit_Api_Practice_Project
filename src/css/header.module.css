@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    background-color: grey;
+    
+    border-bottom: 1px solid grey ;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+}
+
+.menucont {
+    display: none;
+}
+
+.menu {
+    width: 25px;
+    height: 3px;
+    background-color: black;
+    margin: 5px;
+}
+
+.headerStyle {
+    display: flex;
+    justify-content: space-between;
+    gap: 80px;
+    height: 90%;
+    align-items: center;
+}
+
+.innerHeader {
+    display: flex;
+    width: 200px;
+    gap: 30px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.logoimg {
+    height: 32px;
+    width: 32px;
+    margin-left: 10px;
+}
+
+.logo {
+    font-size: 20px;
+    color: blue;
+}
+
+.logoRed {
+    color: rgb(244, 87, 9);
+}
+
+
+.searchBar {
+    margin-right: 10px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    height: 40px;
+    width: 470px;
+    padding-left: 30px;
+    background: white url(../image/icon-search.png) center left no-repeat;
+    background-size: 20px;
+}
+
+
+
+.login {
+    padding: 10px 15px;
+    font-size: 12px;
+    background-color: rgb(244, 87, 9);
+    color: white;
+    font-family: monospace;
+    border: 2px solid rgb(244, 87, 9);
+    border-radius: 20px;
+    margin-right: 20px;
+}
+
+.login:hover {
+    background-color: white;
+    color: rgb(244, 87, 9);
+}
+
+.inputcont {
+    display: flex;
+    gap: 13rem;
+}
+
+@media screen and (max-width: 480px) {
+    .headerStyle {
+        gap: 5px;
+    }
+
+    .innerHeader {
+        width: 30px
+    }
+
+    .logocont {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .inputcont {
+        display: flex;
+        gap: 0;
+    }
+
+    .menucont {
+        display: block;
+
+    }
+
+    .logo {
+        visibility: collapse;
+    }
+
+    .searchBar {
+        margin-left: 30px;
+        width: 30px;
+        background-size: 20px;
+        border: none;
+        background-color: rgba(227, 224, 224, 0.486);
+    }
+
+    .searchBar:focus {
+        width: 150px;
+
+        background-color: white;
+
+    }
+
+    .login {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 480px) and (max-width: 960px) {
+    .logocont {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 100px;
+    }
+
+    .menucont {
+        display: block;
+
+    }
+
+    .logo {
+        display: none;
+    }
+
+    .searchBar {
+        margin-left: 30px;
+        width: 30px;
+        background-size: 20px;
+        border: none;
+        background-color: rgba(227, 224, 224, 0.486);
+    }
+
+    .searchBar:focus {
+        width: 300px;
+
+        background-color: white;
+    }
+
+    .inputcont {
+        gap: 0;
+    }
+
+    .login {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+}

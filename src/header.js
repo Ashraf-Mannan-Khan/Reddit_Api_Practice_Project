@@ -1,10 +1,14 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import reddit from './image/reddit.png';
 import style from './css/header.module.css';
 
-function Header({searchQuery , setSearchQuery}) {
-
-
+function Header({searchQuery, setSearchQuery, setSearchView}) {
+  
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setSearchView(true);
+        setSearchQuery(searchQuery);
+    };
     return (
         <header className={style.header}>
 
@@ -22,7 +26,17 @@ function Header({searchQuery , setSearchQuery}) {
                     </div>
                 </div>
                 <div className={style.inputcont}>
-                <input className={style.searchBar} type="search" value={searchQuery} id="search" name="search" placeholder="Search..." onChange={(e)=> setSearchQuery("search." + e.target.value )}/>
+                <form onSubmit={handleSearch} className={style.searchForm}>
+            <input
+            
+                type="text"
+                placeholder="Search Reddit..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={style.searchBar}
+            />
+            <button type="submit" className={style.searchButton}>Search</button>
+        </form>
                 <button className={style.login}>Login</button>
                 </div>
                 

@@ -1,18 +1,26 @@
 import React, { useState } from "react";
 import style from './css/sidenavigation.module.css';
 
-function SideNavigation({setNavQuery}) {
+function SideNavigation({setNavQuery, setSearchView}) {
     
     return (
         <>
         <nav className={style.navigation}>
             <div className={style.main_nav}>
             <ul className={style.main_nav_list}>
-                <li className={style.main_nav_item} onClick={()=> setNavQuery('r/home')}>
+                <li className={style.main_nav_item} onClick={()=> {
+                    setNavQuery('r/home');
+                    setSearchView(false);
+                }
+                    }>
                     
                 <svg rpl="" fill="currentColor" height="20" icon-name="home-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"> <path d="m17.71 8.549 1.244.832v8.523a1.05 1.05 0 0 1-1.052 1.046H12.73a.707.707 0 0 1-.708-.707v-4.507c0-.76-1.142-1.474-2.026-1.474-.884 0-2.026.714-2.026 1.474v4.507a.71.71 0 0 1-.703.707H2.098a1.046 1.046 0 0 1-1.052-1.043V9.381l1.244-.835v9.158h4.44v-3.968c0-1.533 1.758-2.72 3.27-2.72s3.27 1.187 3.27 2.72v3.968h4.44V8.549Zm2.04-1.784L10.646.655a1.12 1.12 0 0 0-1.28-.008L.25 6.765l.696 1.036L10 1.721l9.054 6.08.696-1.036Z"></path> </svg><span className={style.home}>Home</span>
                     </li>
-                <li className={style.main_nav_item} onClick={()=> setNavQuery('r/popular')}>
+                <li className={style.main_nav_item} onClick={()=> {
+                     setSearchView(false);
+                     setNavQuery('r/popular')
+                }
+                   }>
                 <svg rpl="" fill="currentColor" height="20" icon-name="popular-fill" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 0a10 10 0 1 0 10 10A10.01 10.01 0 0 0 10 0Zm4 13.791L10.812 10.6l-6.245 6.247a8.92 8.92 0 0 1-1.414-1.414L9.4 9.188 6.209 6h7.778l.013.638v7.153Z"></path> </svg> <span className={style.popular}>Popular</span>
                     </li>
             </ul>

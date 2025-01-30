@@ -3,47 +3,67 @@ import ReactMarkdown from "react-markdown";
 import he from "he";
 import style from './css/card.module.css';
 import reddit from './image/reddit.png';
-import image_or_video from './image/sample-image.webp';
-
-import uparrowOnClick from './image/up-arrow-arrows-svgrepo-com (1).svg';
-import downarrow from './image/down-arrow-svgrepo-com.svg';
-import downarrowOnClick from './image/down-arrow-download-svgrepo-com (1).svg';
 import sharebutton from './image/share.png';
 import commentbutton from './image/comment-white-oval-bubble.png';
-import uparrow from './image/up-arrow-svgrepo-com.svg';
-import LikeButton from "./likeButton";
-import DislikeButton from "./dislikeButton";
+import LikeDislikeButton from "./likeButton";
 import Comment from "./comment";
-function Card({ query = "" }) {
-    const [likeClicked, setLikeClicked] = useState(false);
-    const [dislikeClicked, setDislikeClicked] = useState(false);
+function Card({ query = "", searchView, searchQuery }) {
     const [loading, setLoading] = useState(false);
     const [post_id, setPost_id] = useState('');
     const [subReddit, setSubReddit] = useState('');
     const [cardData, setCardData] = useState([]);
     const [cardComment, setCardComment] = useState([]);
-    async function fetchData() {
-        const url = `https://www.reddit.com/${query}.json?limit=10`;
-        try {
-            const data = await fetch(url, {
-                method: "GET",
-                "Content-Type": "application/json",
-            });
-            const response = await data.json();
+    const  [card_id , setCard_id] = useState([]);
+    const [likeStatus, setLikeStatus] = useState('none');
+    const [button_id, setButton_id] = useState('')
 
-            setCardData(response.data.children);
-        } catch (error) {
-            console.log(error);
+
+
+
+    async function fetchData() {
+        if (searchView) {
+            const url = `https://www.reddit.com/search.json?q=${searchQuery}`;
+            try {
+                const data = await fetch(url, {
+                    method: "GET",
+                    "Content-Type": "application/json",
+                });
+                const response = await data.json();
+
+                setCardData(response.data.children);
+                for(let i =0; i < response.data.children.length; i++) {
+                    setCard_id(prev => [...prev, response.data.children[i].data.id]);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            const url = `https://www.reddit.com/${query}.json?limit=10`;
+            try {
+                const data = await fetch(url, {
+                    method: "GET",
+                    "Content-Type": "application/json",
+                });
+                const response = await data.json();
+
+                setCardData(response.data.children);
+                for(let i =0; i< response.data.children.length; i++) {
+                    setCard_id(prev => [...prev , response.data.children[i].data.id]);
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
         }
+
+
 
     }
     useEffect(() => {
         fetchData();
-        console.log("Updated Reddit Data:", cardData);
 
-
-    }, [query]);
-
+    }, [searchView, query]);
+    console.log(button_id);
     async function fetchComment(post_id, subReddit) {
         setLoading(true);  // Start loading
         const url = `https://www.reddit.com/r/${subReddit}/comments/${post_id}.json?sort=top`;
@@ -53,7 +73,7 @@ function Card({ query = "" }) {
                 "Content-Type": "application/json",
             });
             const response = await data.json();
-            setCardComment(response[1].data.children.slice(0, 9));  // Store all comments
+            setCardComment(response[1].data.children.slice([0, 9]));  // Store all comments
             setLoading(false);  // End loading
         } catch (error) {
             console.error(error);
@@ -61,17 +81,15 @@ function Card({ query = "" }) {
         }
     }
 
-    console.log("Updated Reddit Data:", cardData);
-    console.log(query);
-
+    console.log(card_id)
     return (
         <>
             <div className={style.mainHead}>
                 {cardData.map(item => {
-                    let currentUps = item.data.ups;
+
                     return (
 
-                        <div className={style.card}>
+                        <div className={style.card} >
                             <div className={style.card_User_Details}>
                                 <div className={style.userDetails}>
                                     <img src={reddit} alt="userimage" className={style.userimage} />
@@ -101,29 +119,21 @@ function Card({ query = "" }) {
 
 
                             </div>
-                            <div className={style.like_button_comment_button_share_cont}>
-                                <div className={style.like_button_cont}>
-                                    <button className={style.like_button}>
-                                        {/* <img src={ uparrow } className={style.uparrow} onClick={(e) => {
-                                            setLikeClicked(!likeClicked);
-                                           
-                                            e.target.src = !likeClicked ? uparrow : uparrowOnClick;
-                                           
-                                           
-
-                                        }
-
-                                        } /> */}
-                                        <LikeButton />
-                                       
+                            <div className={style.like_button_comment_button_share_cont} >
+                                <div className={style.like_button_cont} key={item.data.id}>
+                                    <button className={style.like_button} onClick={ () => setButton_id(item.data.id)} >
                                         
-                                        <span>{currentUps}</span>
-                                       
+                                             <LikeDislikeButton card_id={card_id} button_id={button_id} >
+                                            <span>{item.data.ups}</span>
+                                            </LikeDislikeButton>
+                                
+                                        
+
+                                        
                                     </button>
-                                    <button className={style.dislike_button}>
-                                      
-                                            <DislikeButton />
-                                    </button>
+                                    {/* <button className={style.dislike_button}>
+
+                                    </button> */}
                                 </div>
                                 <div className={style.comment_button_cont}>
                                     <button className={style.comment_button} onClick={() => {
@@ -142,54 +152,19 @@ function Card({ query = "" }) {
                                     </button>
                                 </div>
                             </div>
-                           {post_id === item.data.id && <Comment post_id={post_id} subReddit={subReddit} cardComment={cardComment} loading={loading} /> }
+                            {post_id === item.data.id && <Comment post_id={post_id} subReddit={subReddit} cardComment={cardComment} loading={loading} />}
                         </div>
 
                     )
                 })}
 
-
-
-                {/* <div className={style.card_User_Details}>
-                <div className={style.userDetails}>
-                    <img src={reddit} alt="userimage" className={style.userimage} />
-                    <p className={style.username}>r/username</p>
-                </div>
-                <div className={style.join_and_svg_cont}>
-                    <button className={style.join_button}>Join</button>
-                    <span class="flex"><svg rpl="" fill="currentColor" height="16" icon-name="overflow-horizontal-fill" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M6 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path> </svg></span>
-                </div>
-            </div>
-            <div className={style.image_or_video_Cont} >
-                <img src={image_or_video} alt="" className={style.image_or_video} />
-            </div>
-            <div className={style.like_button_comment_button_share_cont}>
-                <div className={style.like_button_cont}>
-                    <button className={style.like_button}>
-                        <img src={uparrow} className={style.uparrow}></img>
-                        <span>32</span>
-                    </button>
-                    <button className={style.dislike_button}>
-                        <img src={downarrowOnClick} className={style.downarrow}></img>
-                    </button>
-                </div>
-                <div className={style.comment_button_cont}>
-                    <button className={style.comment_button}>
-                        <img src={commentbutton} className={style.comment_image}></img>
-                        <span>40</span>
-                    </button>
-                </div>
-                <div className={style.share_button_cont}>
-                    <button className={style.share_button}>
-                        <img src={sharebutton} className={style.share_image}></img>
-                        <span>Share</span>
-                    </button>
-                </div>
-            </div> */}
             </div>
         </>
 
     );
+
+
+
 
 }
 

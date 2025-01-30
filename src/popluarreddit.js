@@ -7,7 +7,7 @@ import Fetch from "./fetch";
 import Card from "./card";
 import SideNavigation from "./navigation"
 
-function PopularReddit({query , setPopularQuery}){
+function PopularReddit({setSearchView, query, setPopularQuery}){
     const [seeMore, setSeeMore] = useState(true);
     const [redditdata, setRedditdata] = useState([]);
     async function fetchData() {
@@ -30,7 +30,7 @@ function PopularReddit({query , setPopularQuery}){
         fetchData();
       
     },[query ]);
-    console.log(query);
+
     return (
         <>
             
@@ -41,7 +41,11 @@ function PopularReddit({query , setPopularQuery}){
                         {redditdata.map(item => {
                             return(
                                 <>
-                               <div  className={style.popular_reddit } onClick={() => setPopularQuery(item.data.subreddit_name_prefixed)}  >
+                               <div  className={style.popular_reddit } onClick={() => {
+                                setPopularQuery(item.data.subreddit_name_prefixed);
+                                setSearchView(false);
+                               }
+                                }  >
                                 <div>
                                 <img src={popularRedditImage} className={style.popular_reddit_img}></img>
                                 </div>

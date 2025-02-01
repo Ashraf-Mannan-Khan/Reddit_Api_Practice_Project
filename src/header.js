@@ -1,20 +1,26 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, use} from "react";
 import reddit from './image/reddit.png';
 import style from './css/header.module.css';
 
-function Header({searchQuery, setSearchQuery, setSearchView}) {
-  
+function Header({searchQuery, setSearchQuery, setSearchView, changeDisplay ,setChangeDisplay}) {
+    const [toggle, setToggle] = useState(false);
     const handleSearch = (e) => {
         e.preventDefault();
-        setSearchView(true);
+        setSearchView(false);
         setSearchQuery(searchQuery);
+         setToggle(false);
     };
     return (
         <header className={style.header}>
 
             <div className={style.headerStyle}>
                 <div className={style.logocont}>
-                    <div className={style.menucont}>
+                    <div className={style.menucont} onClick={() => {
+                        setChangeDisplay('block');
+                        if(changeDisplay === 'block') {
+                            setChangeDisplay('none');
+                        }
+                    }}>
 
                         <div className={style.menu}></div>
                         <div className={style.menu}></div>
@@ -32,14 +38,17 @@ function Header({searchQuery, setSearchQuery, setSearchView}) {
                 type="text"
                 placeholder="Search Reddit..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)
+                   
+                }
                 className={style.searchBar}
+                onClick={ () => setToggle(true)}
             />
-            <button type="submit" className={style.searchButton}>Search</button>
+            <button type="submit" className={style.searchButton} onClick={()=> setSearchView(true)} style={toggle ? {display: 'block'}: {display: "none"}}>Search</button>
         </form>
-                <button className={style.login}>Login</button>
-                </div>
                 
+                </div>
+                <button className={style.login}>Login</button>
 
             </div>
         </header>

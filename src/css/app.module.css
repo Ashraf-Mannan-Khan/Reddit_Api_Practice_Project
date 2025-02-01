@@ -1,0 +1,13 @@
+.card_popular_container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+
+@media screen and (min-width: 787px) and (max-width: 1024) {
+    .card_popular_container{
+        justify-content: flex-start;
+        gap:4rem;
+    }
+}

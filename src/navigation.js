@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import style from './css/sidenavigation.module.css';
 
-function SideNavigation({setNavQuery, setSearchView}) {
+function SideNavigation({setNavQuery, setSearchView, changeDisplay}) {
     
     return (
         <>
-        <nav className={style.navigation}>
+        <nav className={style.navigation} style={ changeDisplay === 'block'? {display: 'block'} : null }>
             <div className={style.main_nav}>
             <ul className={style.main_nav_list}>
                 <li className={style.main_nav_item} onClick={()=> {
-                    setNavQuery('r/home');
+                    setNavQuery('');
                     setSearchView(false);
                 }
                     }>
@@ -75,11 +75,11 @@ function SideNavigation({setNavQuery, setSearchView}) {
                 <p className={style.main_nav_Resources_item} >User Agreement</p>
                 </div>
             </details>
+           
+            </div>
             <footer>
             <p>AshReddit,Inc.@2025. All rights reserved.</p>
            </footer>
-            </div>
-            
         </nav>
         </>
     )

@@ -7,7 +7,7 @@ import sharebutton from './image/share.png';
 import commentbutton from './image/comment-white-oval-bubble.png';
 import LikeDislikeButton from "./likeButton";
 import Comment from "./comment";
-function Card({ query = "", searchView, searchQuery }) {
+function Card({ query = "", searchView, searchQuery, setSearchView,  setSearchQuery }) {
     const [loading, setLoading] = useState(false);
     const [post_id, setPost_id] = useState('');
     const [subReddit, setSubReddit] = useState('');
@@ -16,12 +16,13 @@ function Card({ query = "", searchView, searchQuery }) {
     const  [card_id , setCard_id] = useState([]);
     const [likeStatus, setLikeStatus] = useState('none');
     const [button_id, setButton_id] = useState('')
-
-
+    const [showComment, setShowComment] =useState(false);
+    const [cardLoading, setCardLoading] = useState(false);
 
 
     async function fetchData() {
         if (searchView) {
+            setCardLoading(true);
             const url = `https://www.reddit.com/search.json?q=${searchQuery}`;
             try {
                 const data = await fetch(url, {
@@ -34,10 +35,12 @@ function Card({ query = "", searchView, searchQuery }) {
                 for(let i =0; i < response.data.children.length; i++) {
                     setCard_id(prev => [...prev, response.data.children[i].data.id]);
                 }
+                setCardLoading(false);
             } catch (error) {
                 console.log(error);
             }
         } else {
+            setCardLoading(true);
             const url = `https://www.reddit.com/${query}.json?limit=10`;
             try {
                 const data = await fetch(url, {
@@ -50,7 +53,7 @@ function Card({ query = "", searchView, searchQuery }) {
                 for(let i =0; i< response.data.children.length; i++) {
                     setCard_id(prev => [...prev , response.data.children[i].data.id]);
                 }
-
+                setCardLoading(false);
             } catch (error) {
                 console.log(error);
             }
@@ -61,8 +64,8 @@ function Card({ query = "", searchView, searchQuery }) {
     }
     useEffect(() => {
         fetchData();
-
-    }, [searchView, query]);
+        
+    }, [query,  searchView]);
     console.log(button_id);
     async function fetchComment(post_id, subReddit) {
         setLoading(true);  // Start loading
@@ -84,9 +87,9 @@ function Card({ query = "", searchView, searchQuery }) {
     console.log(card_id)
     return (
         <>
-            <div className={style.mainHead}>
+            {cardLoading ? <p>Loading...</p>:<div className={style.mainHead}>
                 {cardData.map(item => {
-
+                    let ups = item.data.ups;
                     return (
 
                         <div className={style.card} >
@@ -110,7 +113,7 @@ function Card({ query = "", searchView, searchQuery }) {
                                             e.target.src = item.data.thumbnail;
                                         }} />}
                                 {item.data.is_video && item.data.url_overridden_by_dest &&
-                                    <video width="420" height="420" muted={false} controls>
+                                    <video className={style.video} muted={false} controls>
                                         <source src={item.data.media.reddit_video.fallback_url} type="video/mp4" />
 
                                         <source src={item.data.url_overridden_by_dest} type="video/mp4" />
@@ -123,23 +126,16 @@ function Card({ query = "", searchView, searchQuery }) {
                                 <div className={style.like_button_cont} key={item.data.id}>
                                     <button className={style.like_button} onClick={ () => setButton_id(item.data.id)} >
                                         
-                                             <LikeDislikeButton card_id={card_id} button_id={button_id} >
-                                            <span>{item.data.ups}</span>
-                                            </LikeDislikeButton>
-                                
-                                        
+                                            <LikeDislikeButton card_id={card_id} button_id={button_id} ups={ups} />
 
-                                        
                                     </button>
-                                    {/* <button className={style.dislike_button}>
-
-                                    </button> */}
                                 </div>
                                 <div className={style.comment_button_cont}>
                                     <button className={style.comment_button} onClick={() => {
                                         setPost_id(item.data.id);
                                         setSubReddit(item.data.subreddit);
                                         fetchComment(item.data.id, item.data.subreddit);
+                                        setShowComment(!showComment);
                                     }}>
                                         <img src={commentbutton} className={style.comment_image}></img>
                                         <span>{item.data.num_comments}</span>
@@ -152,13 +148,13 @@ function Card({ query = "", searchView, searchQuery }) {
                                     </button>
                                 </div>
                             </div>
-                            {post_id === item.data.id && <Comment post_id={post_id} subReddit={subReddit} cardComment={cardComment} loading={loading} />}
+                            {post_id === item.data.id && showComment &&<Comment post_id={post_id} subReddit={subReddit} cardComment={cardComment} loading={loading} />}
                         </div>
 
                     )
                 })}
 
-            </div>
+            </div>}
         </>
 
     );
